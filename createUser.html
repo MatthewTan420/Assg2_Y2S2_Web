@@ -3,7 +3,6 @@
 <head>
     <title>Page Title</title>
     <link href="style.css" rel="stylesheet" type="text/css" >
-
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
@@ -48,7 +47,6 @@
                 const user = userCredential.user;
                 console.log("created user ... " + JSON.stringify(userCredential));
                 console.log("User is now signed in ");
-                window.location.assign('createUser.html');
             }).catch((error)=>{
                 const errorCode = error.code;
                 const errorMessage = error.message;
@@ -70,7 +68,7 @@
         })
 
         function createData(username, country, age){
-            const userRef = ref(db, `players/${username}`);
+            const userRef = ref(db, 'players');
             const newUserRef = push(userRef);
             set(newUserRef, {
                 username: username,
@@ -78,22 +76,21 @@
                 age: age,
             });
         }
-
-      </script>
+    </script>
 
 </head>
 <body>
 
 <div class="container">
-    <h2>Login</h2>
-    <form id="frmCreateUser">
-        <label for="username">email</label>
-        <input type="text" id="email" name="email" placeholder="Enter your username">
-
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password">
-
-        <button type="submit">Login</button>
+    <h2>User Info</h2>
+    <form id="frmCreateData">
+        <p>Username</p>
+        <input type="text" id="username"><br>
+        <p>Country</p>
+        <input type="text" id="country"><br>
+        <p>Age</p>
+        <input type="text" id="age"><br><br>
+        <button onclick = "createData()">Create Data</button>
     </form>
 </div>
 
