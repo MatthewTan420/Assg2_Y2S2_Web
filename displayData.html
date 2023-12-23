@@ -28,6 +28,7 @@
         const analytics = getAnalytics(app);
 
         const db = getDatabase();
+        const playerRef = ref(db, "players");
 
         class userID { 
             static userID = "";
@@ -61,6 +62,8 @@
                 console.log(`ErrorCode: ${errorCode} -> Message: ${errorMessage}`);
             });
 
+        }
+
             onAuthStateChanged(auth, (currentUser) => {
                 if (currentUser) {
                 // User is signed in, see docs for a list of available properties
@@ -77,49 +80,91 @@
                     console.log(`ErrorCode: ${errorCode} -> Message: ${errorMessage}`);
                 }
             });
-        }
+
+            var adminBtn = document
+                .getElementById("btn-logout")
+                .addEventListener("click", logout);
+
+            function logout() {
+                auth.signOut();
+                window.location.href='index.html';
+            }
 
         import {
         getDatabase, ref, child, get,set,onValue,push,update,remove
         } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
-        var addUserToDatabase = document.getElementById("frmCreateData");
-        if (addUserToDatabase != null){
-            addUserToDatabase.addEventListener("submit", function(e){
-            e.preventDefault();
-            var username = document.getElementById("username").value;
-            var country = document.getElementById("country").value;
-            var age = document.getElementById("age").value;
-            createData(username, country, age,)
-            
-        })
-        }
-        function createData(username, country, age){
-            const userRef = ref(db, 'players');
-            const newUserRef = push(userRef);
-            set(newUserRef, {
-                username: username,
-                country: country,
-                age: age,
-            });
-        }
-      </script>
+        var readBtn = document
+            .getElementById("btn-read")
+            .addEventListener("click", getPlayerData);
+        
+        function getPlayerData(){
+            get(playerRef).then((snapshot) => {
+                if(snapshot.exists()){
+                    console.log(snapshot.val());
+                    let table = document.getElementById("player-data");
+                    let playerInfo = "";
+                    snapshot.forEach((childSnapshot) => {
+                        playerInfo += `<tr>
+                            <td>${childSnapshot.val().username}</td>
+                            <td>${childSnapshot.val().country}</td>
+                            <td>${childSnapshot.val().age}</td>
+                            </tr>`;
+                    });
+                    table.innerHTML = playerInfo
+                } else{
+                    console.log("No data");
+                }
+            }).catch((error) => {
+                console.error(error);
+            })
+            }
 
+        var adminBtn = document
+            .getElementById("btn-admin")
+            .addEventListener("click", getAdminData);
+
+        function getAdminData(){
+            get(playerRef).then((snapshot) => {
+                if(snapshot.exists()){
+                    console.log(snapshot.val());
+                    snapshot.forEach((childSnapshot) => {
+                        if (childSnapshot.val().admin == true) {
+                            if (childSnapshot.key == userID.userID) {
+                                console.log("access granted");
+                                window.location.href='adminPage.html';
+                            }
+                        } else {
+                            console.log("not admin");
+                        };
+                    });
+                } else{
+                    console.log("No data");
+                }
+            }).catch((error) => {
+                console.error(error);
+            })
+            }
+            
+      </script>
 </head>
 <body>
 
 <div class="container">
-    <h2>Sign-Up</h2>
-    <form id="frmCreateUser">
-        <label for="username">email</label>
-        <input type="text" id="email" name="email" placeholder="Enter your username">
-
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password">
-
-        <button type="submit">Login</button>
-        <a href="login.html">Have an account?</a>
-    </form>
+    <h2>Data Table</h2>
+    <table>
+        <thead>
+            <th>username</th>
+            <th>country</th>
+            <th>age</th>
+        </thead>
+        <tbody id = "player-data">
+            
+        </tbody>
+    </table>
+    <button id="btn-read" >Read</button>
+    <button id="btn-admin" >Admin</button>
+    <button id="btn-logout" >Logout</button>
 </div>
 
 </body>

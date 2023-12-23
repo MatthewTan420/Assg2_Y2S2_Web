@@ -28,18 +28,26 @@
 
         const db = getDatabase();
 
+        class userID { 
+            static userID = "";
+        }
+
+        console.log(userID.userID);
+
         import {
             getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut
             } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
             const auth = getAuth();
             var frmCreateUser = document.getElementById("frmCreateUser");
-            frmCreateUser.addEventListener("submit", function(e){
+            if (frmCreateUser != null){
+                frmCreateUser.addEventListener("submit", function(e){
                 e.preventDefault();
                 var email = document.getElementById("email").value;
                 var password = document.getElementById("password").value;
                 createUser(email, password);
                 console.log("email" + email + "password" + password);
             });
+            }
             function createUser(email, password){
                 console.log("creating the user");
                 createUserWithEmailAndPassword(auth, email, password)
@@ -54,28 +62,57 @@
             });
         }
 
+            onAuthStateChanged(auth, (currentUser) => {
+                if (currentUser) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/firebase.User
+                    const uid = currentUser.uid;
+                    console.log(`(OnAuthStateChanged) Current user is logged in:
+                ${currentUser.email} :: ${currentUser.uid}`)
+                    console.log(userID.userID);
+                    userID.userID = currentUser.uid;
+                    console.log(userID.userID);
+                } else {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(`ErrorCode: ${errorCode} -> Message: ${errorMessage}`);
+                }
+            });
+
         import {
         getDatabase, ref, child, get,set,onValue,push,update,remove
         } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
         var addUserToDatabase = document.getElementById("frmCreateData");
-        addUserToDatabase.addEventListener("submit", function(e){
+        if (addUserToDatabase != null){
+            addUserToDatabase.addEventListener("submit", function(e){
             e.preventDefault();
             var username = document.getElementById("username").value;
             var country = document.getElementById("country").value;
             var age = document.getElementById("age").value;
-            createData(username, country, age,)
+            createData(username, country, age, 0, 0, true)
         })
-
-        function createData(username, country, age){
-            const userRef = ref(db, 'players');
-            const newUserRef = push(userRef);
-            set(newUserRef, {
+        }
+        function createData(username, country, age, time, points, admin){
+            console.log(userID.userID);
+            const userRef = ref(db, `players/${userID.userID}`);
+            //const newUserRef = push(userRef);
+            set(userRef, {
                 username: username,
                 country: country,
                 age: age,
+                time: time,
+                points: points,
+                admin: admin,
+            })
+
+            .then(function(){
+                console.log("User has created data ");
+                window.location.href='displayData.html';
             });
         }
+
+        
     </script>
 
 </head>
@@ -90,7 +127,7 @@
         <input type="text" id="country"><br>
         <p>Age</p>
         <input type="text" id="age"><br><br>
-        <button onclick = "createData()">Create Data</button>
+        <button type="submit">Create Data</button>
     </form>
 </div>
 
