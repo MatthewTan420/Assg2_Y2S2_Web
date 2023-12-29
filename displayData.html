@@ -94,14 +94,13 @@
         getDatabase, ref, child, get,set,onValue,push,update,remove
         } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
-        var readBtn = document
+        /*var readBtn = document
             .getElementById("btn-read")
-            .addEventListener("click", getPlayerData);
+            .addEventListener("click", getPlayerData);*/
         
         function getPlayerData(){
             get(playerRef).then((snapshot) => {
                 if(snapshot.exists()){
-                    console.log(snapshot.val());
                     let table = document.getElementById("player-data");
                     let playerInfo = "";
                     snapshot.forEach((childSnapshot) => {
@@ -119,6 +118,8 @@
                 console.error(error);
             })
             }
+
+        getPlayerData();
 
         var adminBtn = document
             .getElementById("btn-admin")

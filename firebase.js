@@ -55,6 +55,15 @@ import {
         console.log(`ErrorCode: ${errorCode} -> Message: ${errorMessage}`);
     });
 
+    var adminBtn = document
+        .getElementById("btn-logout")
+        .addEventListener("click", logout);
+
+        function logout() {
+            auth.signOut();
+            window.location.href='index.html';
+        }
+
     onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
         // User is signed in, see docs for a list of available properties
