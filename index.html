@@ -111,14 +111,18 @@
 <div class="container">
     <h2>Sign-Up</h2>
     <form id="frmCreateUser">
-        <label for="username">email</label>
+    <div class = "input-box">
+        <label for="username">Email</label>
         <input type="text" id="email" name="email" placeholder="Enter your username">
-
+    </div>
+    <div class="input-box">
         <label for="password">Password</label>
         <input type="password" id="password" name="password" placeholder="Enter your password">
-
-        <button type="submit">Login</button>
-        <a href="login.html">Have an account?</a>
+    </div>
+        <button type="submit" class ="btn">Create</button>
+        <div class ='login-link'>
+        <p>Have an account?<a href="login.html"><b>Login</b></a></p>
+        </div>
     </form>
 </div>
 
