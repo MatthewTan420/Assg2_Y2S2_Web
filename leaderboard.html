@@ -1,13 +1,12 @@
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Page Title</title>
-    <link href="display.css" rel="stylesheet" type="text/css" >
+    <link href="leaderboard.css" rel="stylesheet" type="text/css" >
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">
-
+    
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
@@ -102,79 +101,77 @@
             .getElementById("btn-read")
             .addEventListener("click", getPlayerData);*/
         
-    function getPlayerData(id, property){
-    get(playerRef).then((snapshot) => {
-        if(snapshot.exists()){
+        function getPlayerData() {
+        get(playerRef).then((snapshot) => {
+            if(snapshot.exists()){
+            let table = document.getElementById("player-data");
+            let playerData = [];
             snapshot.forEach((childSnapshot) => {
-                // Select the <h2> element
-                let h2Element = document.getElementById(id);
-
-                // Display the data in the <h2> element
-                h2Element.innerText = childSnapshot.val()[property];
+                playerData.push(childSnapshot.val());
             });
+
+            // Sort playerData based on time
+            playerData.sort((a, b) => a.time - b.time);
+
+            let playerInfo = "";
+            playerData.forEach((player) => {
+                playerInfo += `<tr>
+                    <td>${player.username}</td>
+                    <td>${player.country}</td>
+                    <td>${player.time}</td>
+                    </tr>`;
+            });
+            table.innerHTML = playerInfo;
         } else{
             console.log("No data");
         }
     }).catch((error) => {
         console.error(error);
-    })
+    });
 }
 
-getPlayerData('name', 'username');
-getPlayerData('country', 'country');
-getPlayerData('age', 'age');
-getPlayerData('time', 'time');
+        getPlayerData();
+
         var adminBtn = document
             .getElementById("btn-admin")
             .addEventListener("click", getAdminData);
 
         function getAdminData(){
-                                window.location.href='leaderboard.html';
-            }
+            
+            window.location.href='displayData.html';
+        }
+                
             
       </script>
-</head>
-<body>
+      </head>
+    <body>
 
-<div class="container">
-    <div class ='image'>
-        <img src="soldier.png" alt="Avatar" width = '200' height ='200'>
+        <div class="container">
+            <div class ='pimage'>
+                <img src="soldier.png" alt="Avatar" width = '200' height ='200'>
+                </div>
+            <div class = 'buttons'>
+                <button id="btn-read" >Refresh</button>
+                <button id="btn-admin" >Profile</button>
+                <button id="btn-logout" >Logout</button>
+            </div>
+            <div class = 'rank'>
+                <h1>Top 10 Players</h1>
+                <table>
+                    <thead>
+                        <th>Username</th>
+                        <th>Country</th>
+                        <th>Time</th>
+                    </thead>
+                    <tbody id = "player-data">
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
         </div>
-<div class = 'info'>
-<div class = 'name'>
-    <h1><u>Name:</u></h1>
-    <h2 id = 'name'>Players Name</h2>
-</div>
-<div class = 'country'>
-    <h1><u>Country:</u></h1>
-    <h2 id = 'country'>Players Country</h2>
-</div>
-<div class = 'age'>
-    <h1><u>Age:</u></h1> 
-    <h2 id = 'age'>Players Age</h2>
-</div>
-</div>
-  
-
-<div class = 'record'>
-<div class ="time">
-    <h1><u>Best Timing:</u></h1>
-    <h2 id = 'time'>Best Timing</h2>
-</div>
-<div class = "game">
-    <h1><u>Total Games:</u></h1>
-    <h2 id = 'games'>Total Games</h2>
-</div>
-</div>
-<div class = "rank">
-    <h1><u>Rank:</u></h1>
-    <h2 id = 'rank'>Rank Display</h2>
-</div>
-<div class = 'buttons'>
-    <button id="btn-read" >Refresh</button>
-    <button id="btn-admin" >Leaderboard</button>
-    <button id="btn-logout" >Logout</button>
-</div>
-
-</body>
-</html>
+        
+        </body>
+        </html>

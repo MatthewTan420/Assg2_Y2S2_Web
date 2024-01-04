@@ -1,0 +1,75 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Sawarabi Gothic', sans-serif;
+}
+.pimage {
+    margin-top: -80px;
+    margin-left: -10px;
+}
+
+.pimage img {
+
+    border-radius: 50%;
+    background-color: #fff;
+}
+.image {
+    margin-top: 30px;
+    margin-left: 290px;
+}
+
+.rank {
+    margin-top: -220px;
+    margin-left: 250px;
+}
+
+.container {
+    width: 800px;
+    height: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 25px;
+    background: #212121;
+    backdrop-filter: blur(20px);
+    color: #fff;
+} 
+
+.buttons{
+    margin-top: 10px;
+    margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+}
+.buttons button {
+    height: 200%;
+    width: 20%;
+    outline: none;
+    border-radius: 60px;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('battle.jpeg') no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+table {
+    border-collapse: collapse;
+    border: 2px solid rgb(200, 200, 200);
+    letter-spacing: 1px;
+}
+td,th {
+  border: 1px solid rgb(190, 190, 190);
+  padding: 0px 30px;
+  text-align: left;
+}
