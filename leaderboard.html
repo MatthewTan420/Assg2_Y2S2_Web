@@ -112,8 +112,7 @@
             });
 
             // Filter out data that contains admin = true
-            playerData = playerData.filter(player => player.admin !== true);
-
+            playerData = playerData.filter(player => player.admin !== true && player.time !== 0);
             // Sort playerData based on time
             playerData.sort((a, b) => a.time - b.time);
 
