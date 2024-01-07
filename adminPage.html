@@ -66,7 +66,7 @@
                 });
     
             }
-    
+                //listens for changes in the authentication state.
                 onAuthStateChanged(auth, (currentUser) => {
                     if (currentUser) {
                     // User is signed in, see docs for a list of available properties
@@ -100,41 +100,43 @@
             /*var readBtn = document
                 .getElementById("btn-read")
                 .addEventListener("click", getPlayerData);*/
-            
-            function getPlayerData() {
-            get(playerRef).then((snapshot) => {
-                if(snapshot.exists()){
-                let table = document.getElementById("player-data");
-                let playerData = [];
-                snapshot.forEach((childSnapshot) => {
-                    playerData.push(childSnapshot.val());
-                });
     
-                // Sort playerData based on time
-                playerData.sort((a, b) => a.time - b.time);
-    
-                let playerInfo = "";
-                playerData.forEach((player) => {
-                    playerInfo += `<tr>
-                        <td>${player.username}</td>
-                        <td>${player.country}</td>
-                        <td>${player.age}</td>
-                        <td>${player.points}</td>
-                        <td>${player.time}</td>
-                        </tr>`;
-                        
-                });
-                table.innerHTML = playerInfo;
-                addDeleteButtons();
-            } else{
-                console.log("No data");
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
 
-        
-    }
+
+    // Display all user and filter out admins
+    function getPlayerData() {
+    get(playerRef).then((snapshot) => {
+        if(snapshot.exists()){
+            let table = document.getElementById("player-data");
+            let playerData = [];
+            snapshot.forEach((childSnapshot) => {
+                playerData.push(childSnapshot.val());
+            });
+
+            // Filter out players that have admin = true
+            playerData = playerData.filter(player => player.admin !== true);
+
+            // Sort playerData based on time
+
+            let playerInfo = "";
+            playerData.forEach((player) => {
+                playerInfo += `<tr data-uid="${player.uid}">
+                    <td>${player.username}</td>
+                    <td>${player.country}</td>
+                    <td>${player.age}</td>
+                    <td>${player.points}</td>
+                    <td>${player.time}</td>
+                    </tr>`;
+            });
+            table.innerHTML = playerInfo;
+            addDeleteButtons();
+        } else{
+            console.log("No data");
+        }
+    }).catch((error) => {
+        console.error(error);
+    });
+}
     
             getPlayerData();
     
@@ -142,86 +144,47 @@
                 .getElementById("btn-admin")
                 .addEventListener("click", getAdminData);
     
-            function getAdminData(){
-                get(playerRef).then((snapshot) => {
-                    if(snapshot.exists()){
-                        console.log(snapshot.val());
-                        snapshot.forEach((childSnapshot) => {
-                            if (childSnapshot.val().admin == true) {
-                                if (childSnapshot.key == userID.userID) {
-                                    console.log("access granted");
-                                    window.location.href='leaderboard.html';
-                                }
-                            } else {
-                                console.log("not admin");
-                            };
-                        });
-                    } else{
-                        console.log("No data");
-                    }
-                }).catch((error) => {
-                    console.error(error);
-                })
-                }
-
-
             
+
+
         
-            
-                
+
+    // add delete button to each row
     function addDeleteButtons() {
     let table = document.getElementById("player-data");
     for (let i = 0, row; row = table.rows[i]; i++) {
         // Create a new cell
         let cell = row.insertCell(-1);
 
-        console.log(row.cells[0].innerHTML);
-
         // Create a new button
         let btn = document.createElement('button');
         btn.className = 'delete-button';
         btn.innerText = 'Delete';
 
-        // Add event listener for the delete action
-        btn.addEventListener('click', function() {
+        // Retrieve the uid from the row
+        let uid = row.dataset.uid;
 
-            let rowNumber = row.rowIndex;
+        // Store the uid in the button
+        btn.dataset.uid = uid;
 
-            
-            //console.log(rowNumber);
-
-            
-            console.log(rowNumber);
-            
-
-            var cellValue = row.cells[0].innerText;
-
-            console.log(cellValue);
-
-            var playerRef = firebase.database().ref('players/');
-
-            var parentNode = cellValue.parent;
-
-            playerRef.child(parentNode).remove();s
-
-            
-            // Delete the row
-            row.parentNode.removeChild(row);
-            //console.log(table.rows[i]);
-
-            // Delete the player from the database
-            let playerId = row.getAttribute('data-player-id');
-            //deletePlayer(playerId);
-            //deletePlayer();
-        });
-
-        // Add the button to the cell
+        // Append the button to the cell
         cell.appendChild(btn);
-    }
 
+     btn.addEventListener('click', function() {
     
+    const uid = this.dataset.uid;
+    const userRef = ref(db, 'players/' + uid);
+    console.log('Attempting to delete user with uid:', uid);
+    remove(userRef).then(() => {
+        console.log('User deleted successfully');
+        row.parentNode.removeChild(row);
+        console.log(uid);
+    }).catch((error) => {
+        console.error('Error deleting user:', error);
+    });
+});
+    }
 }
-
 function deletePlayer() {
 
     

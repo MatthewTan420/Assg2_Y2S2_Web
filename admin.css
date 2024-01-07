@@ -38,21 +38,21 @@ td,th {
   text-align: left;
 }
 .tables {
-    margin-top: -550px;
-    margin-left: 75px;
-    max-height: 100vh;
+    margin-top: -540px;
+    margin-left: 5px;
+    max-height: 500vh;
     overflow-y: scroll;
 }
 
 .buttons{
     margin-top: 500px;
-    margin-left: 15px;
+    margin-left: 250px;
     display: flex;
     flex-direction: column;
 }
 
 button {
-    width: 100%;
+    width: 50%;
     height: 100%;
     background: #fff;
     border: none;

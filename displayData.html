@@ -9,6 +9,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">
 
     <script type="module">
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    var adminBtn = document.getElementById("btn-admin");
+    if (adminBtn) {
+        adminBtn.addEventListener("click", getAdminData);
+        console.log('work');
+    } else {
+        console.log('Button with id "btn-admin" not found');
+    }
+});
+
+function getAdminData(){
+    window.location.href='leaderboard.html';
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    var adminBtn = document.getElementById("btn-logout");
+    if (adminBtn) {
+        adminBtn.addEventListener("click", logOutt);
+        console.log('work');
+    } else {
+        console.log('Button with id "btn-admin" not found');
+    }
+});
+
+function logOutt(){
+    window.location.href='index.html';
+}
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
@@ -68,50 +96,48 @@
 
         }
 
-            onAuthStateChanged(auth, (currentUser) => {
-                if (currentUser) {
-                // User is signed in, see docs for a list of available properties
-                // https://firebase.google.com/docs/reference/js/firebase.User
-                    const uid = currentUser.uid;
-                    console.log(`(OnAuthStateChanged) Current user is logged in:
-                ${currentUser.email} :: ${currentUser.uid}`)
-                    console.log(userID.userID);
-                    userID.userID = currentUser.uid;
-                    console.log(userID.userID);
-                } else {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.log(`ErrorCode: ${errorCode} -> Message: ${errorMessage}`);
-                }
-            });
+        // Based on the logged in user, get the data from Firebase
+        onAuthStateChanged(auth, (currentUser) => {
+    if (currentUser) {
+        // User is signed in
+        const uid = currentUser.uid;
+        console.log(`(OnAuthStateChanged) Current user is logged in: ${currentUser.email} :: ${currentUser.uid}`)
 
-            var adminBtn = document
-                .getElementById("btn-logout")
-                .addEventListener("click", logout);
+        // Call getPlayerData with the user's ID
+        getPlayerData(uid, {
+            'username': 'name',
+            'country': 'country',
+            'age': 'age',
+            'time': 'time',
+            'points': 'point',
+            'num': 'nums'
+        });
+    } else {
+        // User is not signed in
+        console.log('User is not signed in');
+    }
+});
 
-            function logout() {
-                auth.signOut();
-                window.location.href='index.html';
-            }
+// Loop through and display the data in the <h2 id> elements
+function getPlayerData(uid, propertyToElementIdMap){
+    // Create a reference to the user's data in Firebase
+    const userRef = ref(db, 'players/' + uid);
 
-        import {
-        getDatabase, ref, child, get,set,onValue,push,update,remove
-        } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-
-        /*var readBtn = document
-            .getElementById("btn-read")
-            .addEventListener("click", getPlayerData);*/
-        
-    function getPlayerData(id, property){
-    get(playerRef).then((snapshot) => {
+    get(userRef).then((snapshot) => {
         if(snapshot.exists()){
-            snapshot.forEach((childSnapshot) => {
-                // Select the <h2> element
-                let h2Element = document.getElementById(id);
+            // Get all the data for the user
+            let userData = snapshot.val();
 
-                // Display the data in the <h2> element
-                h2Element.innerText = childSnapshot.val()[property];
-            });
+            // Display the data
+            for (let property in propertyToElementIdMap) {
+                if (property in userData) {
+                    // Select the <h2> element
+                    let h2Element = document.getElementById(propertyToElementIdMap[property]);
+
+                    // Display the data in the <h2> element
+                    h2Element.innerText = userData[property];
+                }
+            }
         } else{
             console.log("No data");
         }
@@ -120,17 +146,20 @@
     })
 }
 
-getPlayerData('name', 'username');
-getPlayerData('country', 'country');
-getPlayerData('age', 'age');
-getPlayerData('time', 'time');
-        var adminBtn = document
-            .getElementById("btn-admin")
-            .addEventListener("click", getAdminData);
 
-        function getAdminData(){
-                                window.location.href='leaderboard.html';
-            }
+
+
+        import {
+        getDatabase, ref, child, get,set,onValue,push,update,remove
+        } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+        /*var readBtn = document
+            .getElementById("btn-read")
+            .addEventListener("click", getPlayerData);*/
+   
+   
+
+      
             
       </script>
 </head>
@@ -163,12 +192,12 @@ getPlayerData('time', 'time');
 </div>
 <div class = "game">
     <h1><u>Total Games:</u></h1>
-    <h2 id = 'games'>Total Games</h2>
+    <h2 id = 'nums'>Total Games</h2>
 </div>
 </div>
 <div class = "rank">
-    <h1><u>Rank:</u></h1>
-    <h2 id = 'rank'>Rank Display</h2>
+    <h1><u>Points:</u></h1>
+    <h2 id = 'point'>Rank Display</h2>
 </div>
 <div class = 'buttons'>
     <button id="btn-read" >Refresh</button>

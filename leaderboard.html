@@ -66,7 +66,7 @@
             });
 
         }
-
+            // listens for changes in the authentication state.
             onAuthStateChanged(auth, (currentUser) => {
                 if (currentUser) {
                 // User is signed in, see docs for a list of available properties
@@ -100,15 +100,19 @@
         /*var readBtn = document
             .getElementById("btn-read")
             .addEventListener("click", getPlayerData);*/
-        
-        function getPlayerData() {
-        get(playerRef).then((snapshot) => {
-            if(snapshot.exists()){
+    
+    // Loop through the firebase and filter out admins
+    function getPlayerData() {
+    get(playerRef).then((snapshot) => {
+        if(snapshot.exists()){
             let table = document.getElementById("player-data");
             let playerData = [];
             snapshot.forEach((childSnapshot) => {
                 playerData.push(childSnapshot.val());
             });
+
+            // Filter out data that contains admin = true
+            playerData = playerData.filter(player => player.admin !== true);
 
             // Sort playerData based on time
             playerData.sort((a, b) => a.time - b.time);
@@ -132,6 +136,8 @@
 
         getPlayerData();
 
+
+// Go back to profile page
         var adminBtn = document
             .getElementById("btn-admin")
             .addEventListener("click", getAdminData);

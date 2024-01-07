@@ -64,7 +64,7 @@
                 console.log(`ErrorCode: ${errorCode} -> Message: ${errorMessage}`);
             });
         }
-
+            //listens for changes in the authentication state
             onAuthStateChanged(auth, (currentUser) => {
                 if (currentUser) {
                 // User is signed in, see docs for a list of available properties
@@ -93,10 +93,12 @@
             var username = document.getElementById("username").value;
             var country = document.getElementById("country").value;
             var age = document.getElementById("age").value;
-            createData(username, country, age, 0, 0, false)
+            createData(username, country, age, 0, 0, false, 0)
         })
         }
-        function createData(username, country, age, time, points, admin){
+
+        // Create data for the user
+        function createData(username, country, age, time, points, admin, num){
             console.log(userID.userID);
             const userRef = ref(db, `players/${userID.userID}`);
             //const newUserRef = push(userRef);
@@ -107,6 +109,7 @@
                 time: time,
                 points: points,
                 admin: admin,
+                num: num
             })
 
             .then(function(){
@@ -122,7 +125,7 @@
 <body>
 
 <div class="container">
-    <h2>User Info</h2>
+    <h2>Your Particulars</h2>
     <form id="frmCreateData">
         <p>Username</p>
         <div class = "input-box">
